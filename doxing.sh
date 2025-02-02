@@ -1,6 +1,6 @@
 bin/bash/
 clear
-echo "DOXING TERMUX"
+echo "by supercret"
 sleep 3.0
 clear
 #banner
