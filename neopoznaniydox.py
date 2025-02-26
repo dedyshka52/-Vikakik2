@@ -2,195 +2,205 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import time
-import pyfiglet
-from termcolor import colored 
-a=input("Введи текстовый пароль для запуска программы:")
-if a!="neopoznaniyebet":
-	print(colored(f"Пароль не верен! Завершаю работу программы! ", 'red'))
-	print(colored(f"Уточни его у создателей", 'red'))
-	exit()
-else:
-	print(colored(f"Пароль верен! Запускаю работу программы!", 'green'))
-import requests
-import json
-
-class PhoneNumberInfo:
-    def __init__(self):
-        self.htmlweb_api_url = "https://htmlweb.ru/geo/api.php?json&telcod="
-        self.cache_file = 'phone_cache.json'
-        self._load_cache()
-
-    def _load_cache(self):
-        try:
-            with open(self.cache_file, 'r') as file:
-                self.cache = json.load(file)
-        except FileNotFoundError:
-            self.cache = {}
-
-    def _save_cache(self):
-        with open(self.cache_file, 'w') as file:
-            json.dump(self.cache, file)
-
-    def get_number_data(self, user_number):
-        if user_number in self.cache:
-            return self.cache[user_number]
-
-        response_htmlweb = requests.get(self.htmlweb_api_url + user_number)
-
-        if response_htmlweb.ok:
-            data_htmlweb = response_htmlweb.json()
-
-            self.cache[user_number] = data_htmlweb
-            self._save_cache()
-            return data_htmlweb
-        else:
-            return {"status_error": True}
-import requests
+from colorama import init, Fore, Style
 import os
-import time
-from bs4 import BeautifulSoup as BS
+import random
+init()
 
-RED, WHITE, CYAN, GREEN, DEFAULT, CYANCLARO, BOLD = '\033[91m', '\033[46m', '\033[36m', '\033[1;32m',  '\033[0m', '\033[1;36m', '\033[1m'
+red = Fore.RED
+cyan = Fore.CYAN
+blue = Fore.BLUE
+green = Fore.GREEN
 
-def get_html(url):
-	return requests.get(url).text
+mm = r"""
+     ██████╗░██╗░█████╗░██████╗░██╗░░░░░░█████╗░
+     ██╔══██╗██║██╔══██╗██╔══██╗██║░░░░░██╔══██╗
+     ██║░░██║██║███████║██████╦╝██║░░░░░██║░░██║
+     ██║░░██║██║██╔══██║██╔══██╗██║░░░░░██║░░██║
+     ██████╔╝██║██║░░██║██████╦╝███████╗╚█████╔╝
+     ╚═════╝░╚═╝╚═╝░░╚═╝╚═════╝░╚══════╝░╚════╝░
+"""
 
-def parse_ua(tutilka):
-	soup = BS(tutilka, 'html.parser')
-	for date in soup.findAll('td'):
-		content = date.getText().split('  ')
-		for g in content:
-			if g == '':
-				pass
-			elif '\n' in g:
-				g = g.replace("\n", "")
-			else:
-				print(f'{CYAN}[{RED}*{CYAN}] {GREEN}'+g)
 
-print(f'''{BOLD}\033[35m  
-⣿⣿⣿⣿⣿⣿⠟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠙⢿⣿
-⣿⣿⣿⣿⡿⠃⠄⠄⠄⢀⣀⣀⡀⠄⠄⠄⠄⠄⠄⠄⠈⢿
-⣿⣿⣿⡟⠄⠄⠄⠄⠐⢻⣿⣿⣿⣷⡄⠄⠄⠄⠄⠄⠄⠈
-⣿⣿⣿⠃⠄⠄⠄⢀⠴⠛⠙⣿⣿⡿⣿⣦⠄⠄⠄⠄⠄⠄
-⣿⣿⠃⠄⢠⡖⠉⠄⠄⠄⣠⣿⡏⠄⢹⣿⠄⠄⠄⠄⠄⢠
-⣿⠃⠄⠄⢸⣧⣤⣤⣤⢾⣿⣿⡇⠄⠈⢻⡆⠄⠄⠄⠄⣾
-⠁⠄⠄⠄⠈⠉⠛⢿⡟⠉⠉⣿⣷⣀⠄⠄⣿⡆⠄⠄⢠⣿
-⠄⠄⠄⠄⠄⠄⢠⡿⠿⢿⣷⣿⣿⣿⣿⣿⠿⠃⠄⠄⣸⣿
-⠄⠄⠄⠄⠄⢀⡞⠄⠄⠄⠈⣿⣿⣿⡟⠁⠄⠄⠄⠄⣿⣿
-⠄⠄⠄⠄⠄⢸⠄⠄⠄⠄⢀⣿⣿⡟⠄⠄⠄⠄⠄⢠⣿⣿
-⠄⠄⠄⠄⠄⠘⠄⠄⠄⢀⡼⠛⠉⠄⠄⠄⠄⠄⠄⣼⣿⣿
-⠄⠄⠄⠄⠄⡇⠄⠄⢀⠎⠄⠄⠄⠄⠄⠄⠄⠄⠄⠙⢿⣿
-⠄⠄⠄⠄⢰⠃⠄⢀⠎⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
-⠄⠙
+mt = r"""             Создатель: supercret
+╔════════════════╦════════════╦════════════╦════════════╗
+║1. Мошенничество║  4. Дп/Цп  ║  7. Обычный║ 10. Насилие║
+║2. Спам         ║  5. Дианон ║  8. Сесия  ║ 11. Угрозы ║
+║3. Фишинг       ║  6. Канал  ║  9. Група  ║ 12. Выход  ║
+╚════════════════╩════════════╩════════════╩════════════╝
+"""
 
+def send_email(receiver, sender_email, sender_password, subject, body):
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP('smtp.mail.ru', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, receiver, msg.as_string())
+        time.sleep(3)
+        server.quit()
+        return True
+    except Exception as e:
+        return False
+
+senders = {
+    'leonid.morozov.0303@mail.ru': 'sJfiTjnxZCsfn8T9ce0t',
+    'kseniya.pavlova.9898@mail.ru': 'GRVDAjqvvx9xz00L2wUx',
+    'petrovoleg.882@mail.ru': '0nzg033y21qKqWwTHUza',
+    'pupov.vanya01@mail.ru': '7mZ6vKAsiKhizbQr941N',
+    'matvey.moroz2005@mail.ru': 'BbeyibLyma0ipFec4wpm',
+    'vasya.burnov@mail.ru': 'MRWwb41PNBx49xbwCEgs',
+    'annakrasnova.1994@mail.ru': 'jUFMXba6wLFcuQBkqht2',
+    'olga.vladimirovna2211@mail.ru': 'XWSuBgDASvWtSTn6agrJ',
+    'gerasim.dvorin.92@mail.ru': 'NG29UxH06pQB7B3tJQp2',
+    'petrov.alexandr21@mail.ru': '5Qai4gtbDB96YX2zU9zs',
+     'vladik.bobrov111@mail.ru': 'aUEFsvRbY8zCeXczuPYs'
+    }
+
+receivers = [
+"sms@telegram.org", "dmca@telegram.org", "abuse@telegram.org", "sticker@telegram.org", "support@telegram.org", "stopca@telegram.org", "security@telegram.org"
+]
+
+complaint_texts = {
+    "1": "Жалоба на мошенничество",
+    "2": "Жалоба на спам",
+    "3": "Жалоба на фишинг",
+    "4": "Жалоба на детское порно",
+    "5": "Жалоба на дианон",
+    "6": "Жалоба на канал",
+    "7": "Жалоба на акаунт",
+    "8": "Просьба о удаление сесии",
+    "9": "Жалоба на группу",
+    "10": "Жалоба на насилие",
+    "11": "Жалоба на угрозы"
+}
+
+complaint_templates = {
+    "1": [
+        "Уважаемая служба поддержки, хочу сообщить о случае мошенничества. Пользиватель с  ID: {id} пишет людям и предлогает услугу по помоши вывести ноткоин на карту. После передачи ноткоина пользиватель кидает в черный список и отказывается возвашать ноткоин, прошу принять меры по удалению акаунта. Спасибо",
+        "Добрый день, прошу рассмотреть жалобу на мошенничество. Пользиватель с ID: {id} занимается мошенничеством, прошу принять меры по уделению акаунта.",
+        "Жалоба на мошенничество на пользивателя  ID: {id}. Пожалуйста, примите меры."
+    ],
+    "2": [
+        "Здравствуйте, хочу пожаловаться на ID: {id}, он использивает спам для продвижения своего канала из-за чего невозможно обшатся в группе, прошу принять меры по удалению акаунта. Спасибо",
+        "Доброго времени суток, прошу принять меры по рассылке спама. ID: {id} пользаветеля.",
+        "Жалоба на рассылку рекламы. Пользиватель с ID: {id} спамит по группам, прошу принять меры"
+    ],
+    "3": [
+        "Здравствуйте, сообщаю о подозрительной попытке фишинга. ID: {id}.",
+        "Добрый день, прошу обратить внимание на пользивателя с ID: {id} он создает фишинг сылки, прошу принять меры по удалению данного акаунта",
+        "Жалоба на фишинг. Пожалуйста, примите меры. ID: {id} использует фишинг для получения личных данных других пользывателей, прошу принять меры по удалению акаунта. Спасибо"
+    ],
+    "4": [
+        "Добрый день, прошу заблокировать доступ к порнографическому контенту. Акаунту с  ID: {id}. Проблема в том что он занимается продажей детской порнографией",
+        "Здравствуйте, хочу подать жалобу на порнографию.  Пользиватель с  ID: {id} продает детскую порнографию, прошу принять меры по удалению акаунта. Спасибо",
+        "Данный пользиватель с ID: {id} растространяет запрешеный детский контент (дп,цп) прошу вас удалить данный акаунт. Спасибо"
+    ],
+    "5": [
+        "Здравствуйте,уважаемый модератор телеграмм,хочу пожаловаться вам на канал,который продает услуги доксинга, сваттинга ID: {id} прошу принять меры по удалению акаунта",
+        "Доброго времени суток, прошу принять меры по моей жалобе. Пользиватель телеграма под ID: {id} занимается продажай услуг дианона и свата, прошу принять меры. Спасибо",
+        "Данный акаунт под ID: {id} занимается дианозацией и сватингом, прошу принять меры по удалению акаунта"
+    ],
+    "6": [ 
+        "Здравствуйте, поддержка телеграм! я хочу подать жалобу на телеграм канал ссылка: {id}, данный распространяет способи дианона, взлома, свата. Прошу удалить данный канал. Спасибо",
+        "Добрый день, я хочу пожаловаться на телеграм канал ссылка: {id}, данный канал публикует личную информацию пользивателей, прошу принять меры по удалению канала. Спасибо",
+        "Данный канал: ссылка на канал {id} опубликовал мою личную информацию без моего согласия. Прошу принять меры!",
+        "Хочу пожаловаться на канал: ссылка на канал {id}. В посте от дата публикации были опубликованы мои фотографии и ФИО без моего ведома и согласия. Прошу удалить публикацию и принять меры в отношении канала, нарушающего конфиденциальность пользователей. ",
+        "Канал ссылка {id} нарушает правила платформы Telegram, публикуя личную информацию пользователей без их согласия. Требую принять меры!"
     
-1 - Поиск по Государственному Номеру Украина
-2 - Поиск по Номеру Телефона
-3 - Поиск Информации по IP-Адресу
-4 - Поиск Торрентов по IP-Адресу
-5 - Парсинг Прокси
-6 - Поиск Номера по Авито
-7 - BSSID
-{CYAN} Telegram: {RED}@Phezone / @Aleksandrjoo (Subscribe) {CYAN}
-''')
+    ],
+    "7": [
+       "Здравствуйте, поддержка телеграм! я хочу подать жалобу на аккаунт с ID: {id} по причине: буллинг. Буллинг - нарушает политику приложения телеграм, поэтому я прошу что бы вы заблокировали данный аккаунт!",
+       "Данный пользователь {id}, угрожает мне     д0kсинг0м и свaтuнг0м. Он хочет слить мои данные в сеть. Просьба удалить его аккаунт для безопастности.",
+       "Здравствуйте уважаемая поддержка. Пользователь вашей платформы Telegram {id}, угрожает дean0минuзациеё и свaтuнг0м. Требую удалить его аккаунт для безопасности других пользователей.",
+       "Привествую Вас. Я являюсь родителем моего ребёнка и ему поступют угрозы об сливе данных с данного аккаунта {id}. Прошу удалить его аккаунт, так как теперь у моего ребёнка нарушена психика!",
+       "Мне сказали, что телеграм самый безопасный мессенджер, только сейчас этот пользователь {id} хочет слить мои данные.",
+       "Удалите аккаунт этого человека {id}, он говорит, что зamuнuрует школу от моего лица.",
+       "Помогите, пожалуйста, мне угрожает пользователь {id}, говорит, что меня найдёт и yбbёт, мне очень страшно!"
+      ],
+    "8": [
+       "Здраствуйте,меня взломали и выкинули с аккаунта. Теперь Я не могу зайти на аккаунт так как мгновенно выкидывают меня с аккаунта. Прошу помогите, удалите аккаунт или обнулите сессии, там было очень много важной информации. Вот мой ID: {id}",
+        "Telegram, деактивируйте аккаунт {id}, так как с него мне поступают многочисленные угрозы дean0н0м и сват0м, пугает также моих друзей, говорит, что сольёт их данные в сеть",
+        "Прошу удалить сессию пользователя ID: {id} из-за разжигания межнациональной розни и оскорблений на национальной почве.",
+        "У меня есть основания полагать, что пользователь ID: {id} занимается мошенничеством, пытаясь выманить у участников чата деньги или личную информацию. Прошу удалить его сессию и провести проверку его действий.",
+        "Пользователь ID: {id} использует чат для рассылки рекламы и спама, что нарушает правила сообщества. Прошу удалить его сессию и заблокировать возможность отправки нежелательных сообщений.",
+        "Пользователь ID: {id} распространяет ложную информацию о тема, чем вводит участников чата в заблуждение и сеет панику. Прошу удалить его сессию и пресечь дальнейшее распространение фейков."
+        ],
+   "9": [
+       "Считаю, что группа {id} должна быть заблокирована за нарушение правил платформы и мошеннические действия." ,
+        "Прошу проверить деятельность группы {id} на предмет законности.",
+        "Группа {id} использует мошеннические схемы для получения прибыли.",
+        "Требую заблокировать группу {id} за продажу товаров/услуг, нарушающих законодательство.",
+        "Сообщаю о группе {id}, которая обманывает пользователей под видом инвестиций.",
+        "В группе {id} пропагандируются нелегальные способы заработка.",
+        "Обращаюсь с жалобой на группу {id} за организацию финансовых пирамид.",
+        "Группа {id} занимается вымогательством денежных средств у пользователей.",
+        "Прошу принять меры в отношении группы {id}, которая распространяет мошеннические материалы."
+                  ],    
+   "10": [
+        "Считаю действия пользователя {id} неприемлемыми и требую его блокировки за укажите конкретное действие: продажа запрещенных орудий лова, призывы к расправе над бездомными животными и т.д.",
+        "Прошу проверить пользователя {id} на причастность к жестокому обращению с животными.",
+        "Обращаюсь с жалобой на пользователя {id} за пропаганду насилия над животными.",
+         "Необходимо ограничить доступ к платформе пользователю {id} за призывы к жестокости в отношении животных.",
+          "Пользователь {id} демонстрирует опасное поведение по отношению к животным, необходима реакция администрации.",
+          "Фиксирую факт нарушения правил платформы пользователем {id} - размещение материалов с эксплуатацией животных.",
+          "Прошу принять срочные меры в отношении пользователя {id}, замеченного в жестоком обращении с животными."
+   
+   ],    
+   "11": [
+          "Жалоба на пользователя {id}. Данный пользователь допустил в мой адрес угрозы физической расправы, что вызвало у меня серьезные опасения за свою безопасность.",
+       "Прошу принять меры в отношении пользователя с идентификатором {id}. Он неоднократно угрожал мне и моим близким, используя оскорбительные выражения и запугивания.",
+       "Направляю жалобу на пользователя {id} за нарушение правил платформы путем публикации угроз и призывов к насилию в мой адрес. Прошу принять соответствующие меры.",
+       "Обращаюсь с жалобой на пользователя {id} в связи с его агрессивным поведением и прямыми угрозами, которые я расцениваю как недопустимые. Прошу ограничить его действия на платформе.",
+       "Требую принять меры в отношении пользователя {id}, который допустил в мой адрес угрозы шантажа и распространения личной информации. Считаю его действия недопустимыми и нарушающими мои права."
+   ]     
+}
 
 while True:
-	shell = input(f'{CYAN}[{RED}*{CYAN}] Choose number: {GREEN}')
-	if shell == '1':
-		num = input(f'{CYAN}[{RED}*{CYAN}] Car-Number: {GREEN}')
-		parse_ua(get_html('https://baza-gai.com.ua/nomer/' + num))
-	elif shell == '2':
-		phone = input(f'{CYAN}[{RED}*{CYAN}] Номер телефона: {GREEN}')
-		try:
-			response = requests.get('https://htmlweb.ru/geo/api.php?json&telcod=' + phone)
-			data = response.json()
-			user_country = data[ 'country' ][ 'english' ]
-			user_id = data[ 'country' ][ 'id' ]
-			user_location = data[ 'country' ][ 'location' ]
-			user_city = data[ 'capital' ][ 'english' ]
-			user_lat = data[ 'capital' ][ 'latitude' ]
-			user_log = data[ 'capital' ][ 'longitude' ]
-			user_post = data[ 'capital' ][ 'post' ]
-			user_oper = data[ '0' ][ 'oper' ]
-			uty = requests.get("https://api.whatsapp.com/send?phone="+phone)
-			if uty.status_code==200:
-				utl2 = "https://api.whatsapp.com/send?phone="+phone
-			else:
-				utl2 = 'Not founded!'
-			userr_all_info = f'{CYAN}[{RED}*{CYAN}] Country: {GREEN}{str(user_country)}\n{CYAN}[{RED}*{CYAN}] ID: {GREEN}{str(user_id)}\n{CYAN}[{RED}*{CYAN}] Location: {GREEN}{str(user_location)}\n{CYAN}[{RED}*{CYAN}] City: {GREEN}{str(user_city)}\n{CYAN}[{RED}*{CYAN}] Latitude: {GREEN}{str(user_lat)}\n{CYAN}[{RED}*{CYAN}] Longitude:{GREEN} {str(user_log)}\n{CYAN}[{RED}*{CYAN}] Index post:{GREEN} {str(user_post)}\n{CYAN}[{RED}*{CYAN}] Operator:{GREEN} {str(user_oper)}'
-			num_name = []
-			phone_ow = requests.get(f'https://phonebook.space/?number=%2B{phone}').text
-			content = BS(phone_ow, 'html.parser').find('div', class_='results')
-			for i in content.find_all('li'):
-				num_name.append(i.text.strip())
-			name = ', '.join(num_name)
-			user_all_info = f"""
-\033[35m-===[Operator Info]===-
-{userr_all_info}
-\033[35m-===[Social Networks]===-
-{CYAN}[{RED}*{CYAN}] WhatsApp: {GREEN}{utl2}
-\033[35m-===[Personal Info]===-
-{CYAN}[{RED}*{CYAN}] Possible names: {GREEN}{name}
-	"""
-			print(user_all_info)
-		except:
-			print(f'{CYAN}[{RED}-{CYAN}] Хуево написал, пиши правильнее. ¯╲_(ツ)_/¯')
-	elif shell == '3':
-		query = input(f'{CYAN}[{RED}*{CYAN}] Ip For Scan: {GREEN}')
-		try:
-			r = requests.get(f'http://ip-api.com/json/{query}').json()
-			print(f'{CYAN}[{RED}*{CYAN}] Country:{GREEN} {r["country"]}\n{CYAN}[{RED}*{CYAN}] CountryCode:{GREEN} {r["countryCode"]}\n{CYAN}[{RED}*{CYAN}] Region:{GREEN} {r["region"]}\n{CYAN}[{RED}*{CYAN}] Region Name:{GREEN} {r["regionName"]}\n{CYAN}[{RED}*{CYAN}] City: {GREEN}{r["city"]}\n{CYAN}[{RED}*{CYAN}] Zip:{GREEN} {r["zip"]}\n{CYAN}[{RED}*{CYAN}] Latinude: {GREEN}{r["lat"]}\n{CYAN}[{RED}*{CYAN}] Longitude: {GREEN}{r["lon"]}\n{CYAN}[{RED}*{CYAN}] Timezone: {GREEN}{r["timezone"]}\n{CYAN}[{RED}*{CYAN}] ISP:{GREEN} {r["isp"]}\n{CYAN}[{RED}*{CYAN}] Org:{GREEN} {r["org"]}\n{CYAN}[{RED}*{CYAN}] As: {GREEN}{r["as"]} ')
-		except:
-			print(f'{CYAN}[{RED}-{CYAN}] Не найдено, либо ты гей :)')
-	elif shell == '4':
-		query = input(f'{CYAN}[{RED}*{CYAN}] Ip For Scan: {GREEN}')
-		target_ip = query
-		try:
-			headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4086.0 Safari/537.36","Connection": "keep-alive","Host": "iknowwhatyoudownload.com","Referer": "https://iknowwhatyoudownload.com"}
-			page = requests.get("https://iknowwhatyoudownload.com/ru/peer/?ip=" + target_ip, headers=headers)
-			soup = BS(page.content, "html.parser")
-			table = soup.find(class_="table").find("tbody")
-			torrents = table.find_all("tr")
-			for torrent in torrents:
-				first, last = torrent.find_all(class_="date-column")
-				first, last = first.text, last.text
-				category = torrent.find(class_="category-column").text
-				name = torrent.find(class_="name-column").text.replace("\n", '').replace('    ', '')
-				size = torrent.find(class_="size-column").text
-				print(f'{CYAN}[{RED}*{CYAN}] Использовано первый раз: {GREEN}{first}{CYAN}, использовано последний раз: {GREEN}{last}{CYAN}, тип торента: {GREEN}{category}{CYAN}, название торента: {GREEN}{name}{CYAN}, размер торента: {GREEN}{size}{CYAN}\n')
-		except:
-			print(f'{CYAN}[{RED}-{CYAN}] Unkown error ¯╲_(ツ)_/¯')
-	elif shell == '5':
-		res1 = requests.get('https://api.proxyscrape.com/?request=displayproxies&proxytype=http&timeout=1000&country=all&anonymity=elite&ssl=yes')
-		print(f'{CYAN}[{RED}*{CYAN}] Your proxy, ser:\n' + '\n'.join(res1.text.split('\r\n')))
-	elif shell == '6':
-		phone = input(f'{CYAN}[{RED}*{CYAN}] Phone Number: {GREEN} ')
-		try:
-			page = requests.get('https://mirror.bullshit.agency/search_by_phone/'+phone)
-			soup = BS(page.text, 'html.parser')
-			classsell=soup.find(class_='media-heading')
-			namesell= soup.find_all('h4')
-			for classsell in namesell:
-				print(f"{CYAN}[{RED}*{CYAN}] Name: {GREEN}", classsell.text)
-			classtext = soup.find(class_='text-muted')
-			nametext = soup.find_all('span')
-			for classtext in nametext:
-				print(f"{CYAN}[{RED}*{CYAN}] Address and data:{GREEN} ", classtext.text)
-		except:
-			print(f'{CYAN}[{RED}-{CYAN}] Unkown error ¯╲_(ツ)_/¯')
-	elif shell == '7':
-		query = input(f'{CYAN}[{RED}*{CYAN}] BSSID: {GREEN} ')
-		try:
-			response = requests.get("https://api.mylnikov.org/geolocation/wifi?v=1.1&data=open&bssid=" + query)
-			data = response.json()
-			status = data["result"]
-			if status == 200:
-				lat = data["data"]["lat"]
-				lon = data["data"]["lon"]
-				print(f'{CYAN}[{RED}*{CYAN}] Latinude: {GREEN}{lat}{CYAN}\n{CYAN}[{RED}*{CYAN}] Longitude: {GREEN}{lon}')
-			else:
-				errorCode = data["message"]
-				errorMessage = data["desc"]
-				print(f'{CYAN}[{RED}*{CYAN}] Error code: {GREEN}{errorCode}{CYAN}\n{CYAN}[{RED}*{CYAN}] Error message: {GREEN}{errorMessage}{CYAN}')
-		except:
-			print(f'{CYAN}[{RED}-{CYAN}] Пиши вверно! или ты лох')
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(Fore.RED + mm + Style.RESET_ALL)
+    print(Fore.RED + mt + Style.RESET_ALL)
+
+    choice = input(Fore.RED +"Выберите тип жалобы: "+ Style.RESET_ALL)
+
+    if choice in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']:
+        complaint_type = complaint_texts[choice]
+        print(Fore.GREEN + f"Укажите ID для жалобы на {complaint_type}:" + Style.RESET_ALL)
+        complaint_id = input(Fore.GREEN + "ID: " + Style.RESET_ALL)
+        
+        while True:
+            try:
+                num_complaints = int(input(Fore.GREEN +"Введите количество жалоб для отправки: "+ Style.RESET_ALL))
+                if num_complaints > 0:
+                    break
+                else:
+                    print(Fore.RED +"Введите число больше 0."+ Style.RESET_ALL)
+            except ValueError:
+                print(Fore.RED +"Неверный формат. Введите целое число."+ Style.RESET_ALL)
+
+        successfully_sent_emails = 0
+        for _ in range(num_complaints):
+            sender_email = random.choice(list(senders.keys()))
+            sender_password = senders[sender_email]
+            receiver = random.choice(receivers)
+
+            complaint_template = random.choice(complaint_templates[choice])
+            complaint_body = complaint_template.format(id=complaint_id)
+            if send_email(receiver, sender_email, sender_password, f"{complaint_type}", complaint_body):
+                successfully_sent_emails += 1
+                print(f"Отправлено на {receiver} от {sender_email}!")
+            else:
+                print(Fore.RED + f"Ошибка при отправке на {receiver} от {sender_email}!" + Style.RESET_ALL)
+
+        print(f"Успешно отправлено {successfully_sent_emails} из {num_complaints} писем.")
+        input(Fore.RED +"Нажмите Enter для продолжения..."+ Style.RESET_ALL)
+    elif choice == '12':
+        break
+    else:
+        print(Fore.RED +"Неверный выбор."+ Style.RESET_ALL)
+        colorama
